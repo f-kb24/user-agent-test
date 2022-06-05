@@ -1,0 +1,30 @@
+version: "3.8"
+
+services: 
+  database:
+    image: postgres:14.3
+    volumes: 
+      - ./postgres-data:/var/lib/postgresql/data
+    environment: 
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth
+      - POSTGRES_USER=user
+    ports:
+      - 5432:5432
+  flask:
+    build: ./app
+    environment: 
+      - SQLALCHEMY_DATABASE_URI=postgresql://user:password@database/auth
+      - FLASK_APP=app
+      - FLASK_ENV=development
+      - FLASK_DEBUG=True
+      - SECRET_KEY=somesecretkey
+      - SQLALCHEMY_TRACK_MODIFICATIONS=True
+    volumes:
+      - ./app:/app
+    ports: 
+      - 5000:5000
+
+
+volumes:
+  postgres_data:
